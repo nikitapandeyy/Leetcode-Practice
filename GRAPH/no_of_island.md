@@ -1,5 +1,51 @@
 # LeetCode 200 — Number of Islands
 
+Pattern: Grid + BFS + Connected Components
+
+## Approach
+
+1. Initialize `land = 0` to count the number of islands.
+2. Traverse every cell in the grid using two nested loops.
+3. If a cell contains land (`"1"`):
+   - Increment `land` by `1` because a new island is found.
+   - Add its coordinates to the queue.
+   - Mark it visited by changing `"1"` to `"0"`.
+4. Run BFS to explore all connected land cells:
+   - Remove a cell from the queue.
+   - Check its four adjacent cells.
+   - If a neighbor is within the grid boundaries and contains `"1"`:
+     - Mark it visited by changing it to `"0"`.
+     - Add it to the queue.
+5. Continue until all cells have been checked.
+6. Return `land`.
+
+## Python Solution
+
+```
+from collections import dequeclass Solution:    def numIslands(self, grid: List[List[str]]) -> int:        row = len(grid)        col = len(grid[0])        land = 0        directions = {            (-1, 0), (0, -1), (1, 0), (0, 1)        }        for r in range(row):            for c in range(col):                if grid[r][c] == "1":                    land += 1                    que = deque([(r, c)])                    grid[r][c] = "0"  # visited                    while que:                        l, p = que.popleft()                        for dx, dy in directions:                            nr = l + dx                            nc = p + dy                            if 0 <= nr < row and 0 <= nc < col:                                if grid[nr][nc] == "1":                                    grid[nr][nc] = "0"                                    que.append((nr, nc))        return land
+```
+
+## Complexity
+
+Let `m` = number of rows and `n` = number of columns.
+
+- Time: `O(m × n)` — each cell is visited at most once.
+- Space: `O(m × n)` — the queue can hold up to `O(m × n)` coordinates in the worst case.
+
+## Key Takeaways
+
+- Connected components: Each group of connected land cells is one island.
+- Outer loops: Find every island, including disconnected ones.
+- BFS: Explore all land cells connected to the starting cell.
+- Visited marker: Change `"1"` to `"0"` to avoid revisiting cells.
+- Four directions: Up, down, left, and right.
+- Count once: Increment `land` only when discovering a new island.
+- Mark when enqueuing: Prevents the same cell from entering the queue repeatedly.
+- In-place modification: The input grid is changed, so use a separate visited set if you need to preserve it.
+
+Remember: For Number of Islands, the outer loops find each new connected component, and BFS visits all the land belonging to that island.
+# LeetCode 200 — Number of Islands
+
 ## 1. Problem
 
 Given a 2D grid containing:
