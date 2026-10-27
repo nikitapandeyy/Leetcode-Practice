@@ -44,6 +44,95 @@ Let `m` = number of rows and `n` = number of columns.
 - In-place modification: The input grid is changed, so use a separate visited set if you need to preserve it.
 
 Remember: For Number of Islands, the outer loops find each new connected component, and BFS visits all the land belonging to that island.
+##############################################################################################
+# LeetCode 200 — Number of Islands
+
+## 1. Pattern
+**Graph + DFS (Depth-First Search) + Connected Components**
+
+Count how many separate islands exist in a grid. An island consists of connected land cells (`"1"`) connected horizontally or vertically.
+
+## 2. Approach
+
+1. Find the number of rows and columns.
+2. Initialize `count = 0`.
+3. Traverse every cell using nested loops.
+4. If a cell contains `"1"`:
+   - Increment `count` because a new island is found.
+   - Call `dfs(r, c)` to explore the entire island.
+5. In DFS:
+   - Mark the current cell as visited by changing `"1"` to `"0"`.
+   - Check its four neighbors: up, down, left, and right.
+   - If a neighbor is within bounds and contains `"1"`, recursively explore it.
+6. Return `count`.
+
+## 3. Code
+
+```python
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+        row = len(grid)
+        col = len(grid[0])
+        count = 0
+
+        directions = [(-1, 0), (0, -1), (1, 0), (0, 1)]
+
+        def dfs(r, c):
+            grid[r][c] = "0"
+
+            for dx, dy in directions:
+                nr = r + dx
+                nc = c + dy
+
+                if 0 <= nr < row and 0 <= nc < col:
+                    if grid[nr][nc] == "1":
+                        dfs(nr, nc)
+
+        for r in range(row):
+            for c in range(col):
+                if grid[r][c] == "1":
+                    count += 1
+                    dfs(r, c)
+
+        return count
+```
+
+## 4. Key Takeaways
+
+- **`count = 0`:** Initially, no islands have been discovered.
+- **Outer loops:** Visit every cell in the grid.
+- **`count += 1`:** Every unvisited land cell found by the outer loops starts a new island.
+- **DFS:** Explores all land connected to that starting cell.
+- **Mark visited:** Change `"1"` to `"0"` so the same land is not explored repeatedly.
+- **Four directions:** Islands do not connect diagonally.
+- **No separate visited set needed:** Modifying the grid tracks visited cells in place.
+
+### Common mistakes
+
+1. Starting `count` at `1` instead of `0`.
+2. Forgetting to mark cells visited, which can cause infinite recursion.
+3. Calling DFS without incrementing the island count.
+4. Counting every land cell instead of every connected group of land.
+5. Checking diagonal neighbors when only four-directional connections are allowed.
+
+## 5. Complexity
+
+Let `m` be the number of rows and `n` be the number of columns.
+
+- **Time:** `O(m × n)` — each cell is processed at most once.
+- **Space:** `O(m × n)` worst case — the recursive DFS stack can grow to the size of the grid.
+
+## 6. When to Use This Pattern
+
+Use DFS for grid problems involving:
+
+- Counting islands or connected regions.
+- Finding connected groups of cells.
+- Flood fill and region traversal.
+- Exploring all reachable neighboring cells.
+
+**Remember:** Find land → increment the island count → DFS through the connected land → mark it visited → continue scanning.
+
 # LeetCode 200 — Number of Islands
 
 ## 1. Problem
