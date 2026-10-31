@@ -1,0 +1,65 @@
+## 785. Is Graph Bipartite?
+
+Pattern: Graph + BFS + Two-Coloring
+
+### 1. Approach
+
+- Use two colors: `0` and `1`.
+- Initialize `color = [-1] * n`, where `-1` means unvisited.
+- Traverse every node to handle disconnected components.
+- Start BFS from each unvisited node and assign color `0`.
+- For every neighbour:
+  - If uncolored, assign the opposite color (`1 - color[u]`) and add it to the queue.
+  - If already colored with the same color as the current node, return `False`.
+- If no conflicts exist, return `True`.
+
+### 2. Pseudocode
+
+```
+Initialize color array with -1
+
+For every node:
+    If node is uncolored:
+        Assign color 0
+        Push node into queue
+
+        While queue is not empty:
+            Remove node u
+
+            For every neighbour:
+                If neighbour is uncolored:
+                    Assign opposite color
+                    Add neighbour to queue
+
+                Else if both have same color:
+                    Return False
+
+Return True
+```
+
+### 3. Code
+
+```
+from collections import dequeclass Solution:    def isBipartite(self, graph: list[list[int]]) -> bool:        n = len(graph)        color = [-1] * n        for start in range(n):            if color[start] != -1:                continue            que = deque([start])            color[start] = 0            while que:                u = que.popleft()                for neigh in graph[u]:                    if color[neigh] == -1:                        color[neigh] = 1 - color[u]                        que.append(neigh)                    elif color[neigh] == color[u]:                        return False        return True
+```
+
+### 4. Complexity Analysis
+
+Let V = number of vertices and E = number of edges.
+
+| Complexity     | Explanation                                                          |
+| -------------- | -------------------------------------------------------------------- |
+| Time: O(V + E) | Every vertex and edge is visited at most a constant number of times. |
+| Space: O(V)    | Color array and BFS queue.                                           |
+
+### 5. Essentials to remember
+
+1. Bipartite = Two-colorable graph.
+2. Adjacent nodes must have different colors.
+3. `-1` means unvisited.
+4. `1 - color[u]` assigns the opposite color.
+5. Same-colored adjacent nodes → `False`.
+6. Outer loop is important for disconnected components.
+7. A graph containing an odd-length cycle is not bipartite.
+
+Interview takeaway: Bipartite graph checking is a classic BFS/DFS two-coloring problem. You don't need to construct an adjacency list because LeetCode already provides one.
